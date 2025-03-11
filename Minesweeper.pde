@@ -57,8 +57,8 @@ public boolean isWon(){
 
 public void displayLosingMessage(){
     //your code here
-    for (MSButton mine : mines) { // using for each loop
-      mine.setLabel("X");
+    for (int i = 0; i < mines.size(); i++) {
+        mines.get(i).setLabel("X"); // Mark mines for visibility
     }
     fill(255, 0, 0); // red
     textSize(20);
