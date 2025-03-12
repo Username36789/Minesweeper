@@ -2,9 +2,10 @@ import de.bezier.guido.*;
 //Declare and initialize constants NUM_ROWS and NUM_COLS = 20
 private static final int NUM_ROWS = 20;
 private static final int NUM_COLS = 20;
+static final int NUM_MINES = 15;
 private boolean gameOver = false;
-private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> mines; //ArrayList of just the minesweeper buttons that are mined
+private MSButton[][] buttons = new MSButton[NUM_ROWS][NUM_COLS]; //2d array of minesweeper buttons
+private ArrayList <MSButton> mines = new ArrayList<MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
 void setup (){
     size(400, 400);
@@ -36,9 +37,19 @@ public void setMines(){
 public void draw (){
     background( 0 );
     if(isWon() == true)
-        displayWinningMessage();
+        fill(0, 255, 0);
+        textSize(32);
+        text("YOU WIN!", width / 2, height / 2);
+        return;  // this will stop drawing the board
+
     else if (gameOver == true) {
         displayLosingMessage();
+    }
+
+    for (int r = 0; r < NUM_ROWS; r++) {
+      for (int c = 0; c < NUM_COLS; c++) {
+          buttons[r][c].draw();
+      }
     }
 }
 
@@ -51,7 +62,7 @@ public boolean isWon(){
         }
       }
     }
-    displayWinningMessage();
+    //displayWinningMessage();
     return false;
 }
 
@@ -66,13 +77,13 @@ public void displayLosingMessage(){
     text("Game Over", width / 2, height / 2);
 }
 
-public void displayWinningMessage(){
+//public void displayWinningMessage(){
     //your code here
-    fill(0, 255, 0); // green 
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    text("You Win!", width / 2, height / 2);
-}
+//    fill(0, 255, 0); // green 
+//    textSize(20);
+//    textAlign(CENTER, CENTER);
+//    text("You Win!", width / 2, height / 2);
+//}
 
 public boolean isValid(int r, int c){
     //your code here
@@ -115,7 +126,7 @@ public class MSButton{
 
     // called by manager
     public void mousePressed (){
-        if (flagged || clicked) return;
+        if (flagged || clicked || gameOver) return;
             clicked = true;
             //your code here
 
@@ -143,11 +154,15 @@ public class MSButton{
           }
     }
 
+    boolean isClicked(float mx, float my) {
+        return mx > x && mx < x + width && my > y && my < y + height;
+    }
+
     public void draw (){    
         if (flagged)
             fill(0);
-        // else if( clicked && mines.contains(this) ) 
-        //     fill(255,0,0);
+        else if( clicked && mines.contains(this) ) 
+             fill(255,0,0);
         else if(clicked)
             fill( 200 );
         else 
